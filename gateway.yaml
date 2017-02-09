@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: gateway
+  labels:
+    run: gateway
+spec:
+  ports:
+  - name: mysql
+    port: 3366
+    targetPort: 3366
+  - name: ldap  
+    port: 8443
+    targetPort: 8443
+  - name: consul  
+    port: 8500
+    targetPort: 8500
+  - name: port
+    port: 8390
+    targetPort: 8390
+  selector:
+    run: gateway
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: gateway-deployment
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        run: gateway
+    spec:
+      containers:
+      - name: gateway
+        image: smtripat/alpine-apache-k8:v2
+        imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "100Mi"
+          limits:
+            memory: "128Mi"
+            cpu: "300m"
+      imagePullSecrets:
+        - name: myregistrykey

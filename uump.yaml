@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: uump
+  labels:
+    run: uump
+spec:
+  type: NodePort
+  ports:
+   - port: 80
+     protocol: TCP
+#     nodePort: 30022
+  selector:
+    run: uump
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: uump-deployment
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        run: uump 
+    spec:
+      containers:
+      - name: uump
+        image: smtripat/alpine-apache-k8:v3
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+          limits:
+            memory: "128Mi"
+            cpu: "300m"
+      imagePullSecrets:
+        - name: myregistrykey

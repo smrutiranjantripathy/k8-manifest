@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-ptool
+  labels:
+    run: my-ptool
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    run: my-ptool
+

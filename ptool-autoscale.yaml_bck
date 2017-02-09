@@ -1,0 +1,36 @@
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: ptool-autoscale
+  namespace: default
+spec:
+  scaleTargetRef:
+    apiVersion: extensions/v1beta1
+    kind: Deployment
+    metadata:
+      name: ptool-autoscale-deployment
+    spec:
+      replicas: 2
+      template:
+        metadata:
+          labels:
+            run: ptool-autoscale
+    spec:
+      containers:
+      - name: ptool-autoscale
+        image: smtripat/alpine-apache-k8:v1
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+          limits:
+            memory: "128Mi"
+            cpu: "120m"
+      imagePullSecrets:
+        - name: myregistrykey
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 50
+
+
